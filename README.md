@@ -4,4 +4,6 @@
 
 [Диаграмма компонентов](Component.png)
 
+[Диаграмма кода](Code.png)
+
 [ER-диаграмма](ER_diagram.png)
