@@ -1,0 +1,71 @@
+@startuml
+title Схема взаимодействия компонентов системы "Теплый дом"
+
+participant "Пользователь" as user
+participant "Администратор" as admin
+participant "WebApp" as webapp
+participant "ClientAdapter" as adapter
+participant "UsersApp" as usersapp
+participant "DevicesApp" as devicesapp
+participant "MessageBroker" as broker
+participant "Controllers" as controllers
+participant "Sensors" as sensors
+
+autonumber
+
+activate user
+user -> webapp : 1. Вход в ЛК
+activate webapp
+webapp -> adapter : 2. Запрос авторизации
+activate adapter
+adapter -> usersapp : 3. Проверка учетных данных
+activate usersapp
+usersapp -> usersapp : 4. Проверка в UsersDB
+usersapp -> adapter : 5. Ответ об авторизации
+deactivate usersapp
+adapter -> webapp : 6. Результат авторизации
+deactivate adapter
+
+activate admin
+admin -> webapp : 7. Вход в админ-панель
+activate webapp
+webapp -> adapter : 8. Запрос админ-прав
+activate adapter
+adapter -> usersapp : 9. Проверка прав доступа
+activate usersapp
+usersapp -> usersapp : 10. Проверка в UsersDB
+usersapp -> adapter : 11. Ответ о правах
+deactivate usersapp
+adapter -> webapp : 12. Результат проверки
+deactivate adapter
+
+activate sensors
+sensors -> broker : 13. Отправка показаний
+activate broker
+broker -> devicesapp : 14. Передача метрик
+activate devicesapp
+devicesapp -> devicesapp : 15. Обработка данных
+devicesapp -> metricsdb : 16. Сохранение метрик
+devicesapp -> broker : 17. Запрос команд
+deactivate devicesapp
+broker -> controllers : 18. Отправка команд
+activate controllers
+controllers -> broker : 19. Подтверждение
+deactivate controllers
+deactivate broker
+
+activate webapp
+webapp -> adapter : 20. Запрос состояния
+activate adapter
+adapter -> devicesapp : 21. Получение данных
+activate devicesapp
+devicesapp -> devicesdb : 22. Запрос информации
+devicesapp -> adapter : 23. Ответ о состоянии
+deactivate devicesapp
+adapter -> webapp : 24. Данные для отображения
+deactivate adapter
+deactivate webapp
+deactivate user
+deactivate admin
+
+@enduml
