@@ -10,21 +10,21 @@ System(WarmHouse, "Теплый дом", "Система управления м
 
 Container_Boundary(WarmHouse, "Тёплый дом") {
   Container(WebApp, "Веб-приложение", "TS, React", "ЛК Пользователя")
-  Container(Users, "Управление пользователями", "Java", "Регистрация пользователей, аутентификация, авторизация")
-  Container(Devices, "Управление устройствами", "Java", "Регистрация устройств, метрики, команды")
+  Container(Users, "Управление пользователями", "Go", "Регистрация пользователей, аутентификация, авторизация")
+  Container(Devices, "Управление устройствами", "Go", "Регистрация устройств, метрики, команды")
 }
 
-Container(WebApp, "Веб-приложение", "TS, React, Java") {
+Container(WebApp, "Веб-приложение", "TS, React, Go") {
   Component(StaticServer, "StaticServer", "Публикация статических файлов")
   Component(ClientAdapter, "ClientAdapter", "Клиентский адаптер API")
 }
 
-Container(Users, "Мастер-система: Управление пользователями", "Java, Spring") {
+Container(Users, "Мастер-система: Управление пользователями", "Go, Spring") {
   Component(UsersApp, "UsersApp", "Регистрация, аутентификация, авторизация")
   Component(UsersDB, "UsersDB", "Информация о пользователях")
 }
 
-Container(Devices, "Мастер-система: Управление устройствами", "Java, MQTT, MongoDB, CassandraDB") {
+Container(Devices, "Мастер-система: Управление устройствами", "Go, MQTT, MongoDB, CassandraDB") {
   Component(MessageBroker, "MessageBroker", "Брокер сообщений для взаимодействия с устройствами в реальном времени")
   Component(DevicesApp, "DevicesApp", "Регистрация устройств, управление устройствами")
   Component(DevicesDB, "DevicesDB", "Информация об устройствах")
