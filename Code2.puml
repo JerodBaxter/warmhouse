@@ -1,0 +1,63 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+namespace warmhouse.scenario {
+    class ScenarioEngine {
+        +registerTrigger(Trigger)
+        +unregisterTrigger(String)
+        +processEvent(Event)
+    }
+
+    interface Trigger {
+        +match(event: Event): Boolean
+        +execute(): Command
+    }
+
+    class LightTrigger implements Trigger {
+        +matchCondition(event: Event): Boolean
+        +execute(): Command
+    }
+
+    class HeatingTrigger implements Trigger {
+        +matchCondition(event: Event): Boolean
+        +execute(): Command
+    }
+
+    class DoorTrigger implements Trigger {
+        +matchCondition(event: Event): Boolean
+        +execute(): Command
+    }
+
+    interface Command {
+        +execute(): void
+    }
+
+    class TurnOnLightCommand implements Command {
+        +execute()
+    }
+
+    class AdjustHeatingCommand implements Command {
+        +execute()
+    }
+
+    class LockDoorCommand implements Command {
+        +execute()
+    }
+
+    class Event {
+        +type: String
+        +payload: Map<String, Object>
+    }
+
+    ScenarioEngine --> "List<Trigger>" Trigger
+    Trigger <|-- LightTrigger
+    Trigger <|-- HeatingTrigger
+    Trigger <|-- DoorTrigger
+
+    Trigger --> Command
+    Command <|-- TurnOnLightCommand
+    Command <|-- AdjustHeatingCommand
+    Command <|-- LockDoorCommand
+}
+
+@enduml
