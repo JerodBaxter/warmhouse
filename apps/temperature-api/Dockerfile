@@ -1,17 +1,16 @@
-# Базовый образ
-FROM python:3.13-alpine
+# Используйте базовый образ с Python
+FROM python:3.11-slim
 
-# Установка зависимостей
-RUN pip install --upgrade pip
-
-# Копирование файлов
+# Установите зависимости
 WORKDIR /app
-COPY requirements.txt .
+COPY requirements.txt ./
 RUN pip install -r requirements.txt
+
+# Скопируйте код
 COPY . .
 
-# Экспозиция порта
+# Укажите порт
 EXPOSE 8081
 
-# Запуск приложения
+# Запустите приложение
 CMD ["python", "app.py"]
