@@ -51,7 +51,7 @@ func main() {
 
 	// Start server
 	srv := &http.Server{
-		Addr:    getEnv("PORT", ":8080"),
+		Addr:    getEnv("PORT", "0.0.0.0:8080"),
 		Handler: router,
 	}
 
