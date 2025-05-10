@@ -1,33 +1,48 @@
-version: '3.8'
-
+#version: '3.8'
 services:
   postgres:
     image: postgres:16-alpine
     container_name: smarthome-postgres
+    restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: smarthome
+      POSTGRES_MAX_CONNECTIONS: 100
+      POSTGRES_SSL_MODE: disable
     ports:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./smart_home/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "postgres"]
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 5s
       timeout: 5s
       retries: 5
+    networks:
+      - smarthome-network
 
   temperature-api:
     build:
-      context: ./temperature-api
+      context: ./temperature_api
       dockerfile: Dockerfile
-    container_name: smarthome-temperature-api
+    container_name: temperature-api
     ports:
       - "8081:8081"
-    restart: unless-stopped
     networks:
       - smarthome-network
+    restart: unless-stopped
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_NAME: smarthome
+      PORT: 8081
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   app:
     build:
@@ -40,13 +55,21 @@ services:
       temperature-api:
         condition: service_started
     environment:
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5432/smarthome
-      - TEMPERATURE_API_URL=http://temperature-api:8081
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/smarthome
+      TEMPERATURE_API_URL: http://temperature-api:8081
+      PORT: 0.0.0.0:8080
     ports:
       - "8080:8080"
     restart: unless-stopped
     networks:
       - smarthome-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    # Добавляем обработку сигналов
+    stop_signal: SIGTERM
 
 volumes:
   postgres_data:
@@ -54,4 +77,3 @@ volumes:
 networks:
   smarthome-network:
     driver: bridge
-
