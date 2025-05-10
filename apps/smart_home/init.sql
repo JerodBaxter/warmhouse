@@ -1,18 +1,6 @@
--- Create the database if it doesn't exist
-CREATE DATABASE smarthome;
-DO
-$$
-BEGIN
-   IF NOT EXISTS (
-      SELECT FROM pg_database
-      WHERE datname = 'smarthome'
-   ) THEN
-      CREATE DATABASE smarthome;
-   END IF;
-END
-$$;
 -- Connect to the database
 \c smarthome;
+
 -- Create the sensors table
 CREATE TABLE IF NOT EXISTS sensors (
     id SERIAL PRIMARY KEY,
@@ -25,6 +13,7 @@ CREATE TABLE IF NOT EXISTS sensors (
     last_updated TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
 );
+
 -- Create indexes for common queries
 CREATE INDEX IF NOT EXISTS idx_sensors_type ON sensors(type);
 CREATE INDEX IF NOT EXISTS idx_sensors_location ON sensors(location);
